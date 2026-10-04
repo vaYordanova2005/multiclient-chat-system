@@ -6,7 +6,15 @@ import styles from './SettingsTab.module.css';
 type Section = 'Profile' | 'Privacy' | 'Social' | 'Danger';
 const SECTIONS: Section[] = ['Profile', 'Privacy', 'Social', 'Danger'];
 
-export default function SettingsTab({ chat, username }: { chat: ChatController; username: string }) {
+export default function SettingsTab({
+  chat,
+  username,
+  onLogout,
+}: {
+  chat: ChatController;
+  username: string;
+  onLogout: () => void;
+}) {
   const [section, setSection] = useState<Section>('Profile');
 
   return (
@@ -19,7 +27,7 @@ export default function SettingsTab({ chat, username }: { chat: ChatController; 
         ))}
       </div>
       <div className={styles.content}>
-        {section === 'Profile' && <ProfileSection chat={chat} username={username} />}
+        {section === 'Profile' && <ProfileSection chat={chat} username={username} onLogout={onLogout} />}
         {section === 'Privacy' && <PrivacySection chat={chat} />}
         {section === 'Social' && <SocialSection chat={chat} />}
         {section === 'Danger' && <DangerSection chat={chat} />}
@@ -28,7 +36,15 @@ export default function SettingsTab({ chat, username }: { chat: ChatController; 
   );
 }
 
-function ProfileSection({ chat, username }: { chat: ChatController; username: string }) {
+function ProfileSection({
+  chat,
+  username,
+  onLogout,
+}: {
+  chat: ChatController;
+  username: string;
+  onLogout: () => void;
+}) {
   const [name, setName] = useState(username);
   const [status, setStatus] = useState('');
   const [awaitingResponse, setAwaitingResponse] = useState(false);
@@ -101,6 +117,12 @@ function ProfileSection({ chat, username }: { chat: ChatController; username: st
         </div>
       </div>
       <div className={styles.hint}>Uploading a custom avatar from your device is coming in a future update.</div>
+
+      <hr style={{ border: 'none', borderTop: '1px solid rgba(122,111,148,0.15)' }} />
+
+      <button className={styles.primaryButton} onClick={onLogout}>
+        Log out
+      </button>
     </>
   );
 }

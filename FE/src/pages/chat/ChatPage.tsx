@@ -62,7 +62,7 @@ export default function ChatPage() {
               }}
             />
           )}
-          {bottomTab === 'settings' && <SettingsTab chat={chat} username={session!.username} />}
+          {bottomTab === 'settings' && <SettingsTab chat={chat} username={session!.username} onLogout={() => logout()} />}
         </div>
         <div className={styles.bottomNav}>
           <button
