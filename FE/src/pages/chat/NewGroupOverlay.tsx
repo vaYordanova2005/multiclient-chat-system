@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { ChatController } from '../../chat/useChat';
 import { MAX_GROUP_NAME_LENGTH } from '../../chat/types';
 import Avatar from '../../components/Avatar';
+import { useOutsidePress } from './useOutsidePress';
 import styles from './NewGroupOverlay.module.css';
 
 export default function NewGroupOverlay({ chat, onClose }: { chat: ChatController; onClose: () => void }) {
@@ -9,16 +10,7 @@ export default function NewGroupOverlay({ chat, onClose }: { chat: ChatControlle
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const panelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handlePointerDown = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (panelRef.current?.contains(target)) return;
-      if (target instanceof Element && target.closest('[data-new-group-toggle]')) return;
-      onClose();
-    };
-    document.addEventListener('mousedown', handlePointerDown);
-    return () => document.removeEventListener('mousedown', handlePointerDown);
-  }, [onClose]);
+  useOutsidePress(panelRef, onClose, '[data-new-group-toggle]');
 
   function toggleMember(username: string) {
     setSelected((prev) => {

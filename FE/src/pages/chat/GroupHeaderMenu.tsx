@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { ChatController } from '../../chat/useChat';
 import { MAX_GROUP_NAME_LENGTH, type GroupInfo } from '../../chat/types';
+import { useOutsidePress } from './useOutsidePress';
 import styles from './GroupHeaderMenu.module.css';
 
 export default function GroupHeaderMenu({
@@ -22,16 +23,7 @@ export default function GroupHeaderMenu({
   // blur-triggered-by-unmount call a no-op.
   const submittedRef = useRef(false);
 
-  useEffect(() => {
-    const handlePointerDown = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (panelRef.current?.contains(target)) return;
-      if (target instanceof Element && target.closest('[data-group-menu-toggle]')) return;
-      onClose();
-    };
-    document.addEventListener('mousedown', handlePointerDown);
-    return () => document.removeEventListener('mousedown', handlePointerDown);
-  }, [onClose]);
+  useOutsidePress(panelRef, onClose, '[data-group-menu-toggle]');
 
   function submitRename() {
     if (submittedRef.current) return;

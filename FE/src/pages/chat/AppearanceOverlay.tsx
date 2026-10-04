@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { ChatController } from '../../chat/useChat';
 import type { ThemeCatalog } from '../../theme/catalog';
 import { backgroundThemeCss, bubbleThemeCss } from '../../theme/catalog';
+import { useOutsidePress } from './useOutsidePress';
 import styles from './AppearanceOverlay.module.css';
 
 // The "Lilac" and "Sky" base palettes each ended up with a step (LILAC_6
@@ -28,18 +29,9 @@ export default function AppearanceOverlay({
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handlePointerDown = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (panelRef.current?.contains(target)) return;
-      // The toggle button that opens this overlay handles its own open/close
-      // state — let its onClick run instead of racing it here.
-      if (target instanceof Element && target.closest('[data-appearance-toggle]')) return;
-      onClose();
-    };
-    document.addEventListener('mousedown', handlePointerDown);
-    return () => document.removeEventListener('mousedown', handlePointerDown);
-  }, [onClose]);
+  // The toggle button that opens this overlay handles its own open/close
+  // state — let its onClick run instead of racing it here.
+  useOutsidePress(panelRef, onClose, '[data-appearance-toggle]');
 
   const backgrounds = catalog.backgroundThemes.filter((t) => !HIDDEN_THEME_IDS.has(t.id));
   const bgSolid = backgrounds.filter((t) => t.type === 'SOLID');
